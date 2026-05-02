@@ -4100,6 +4100,14 @@ function startTheaterPostureSeedLoop() {
 //   WORLDMONITOR_RELAY_KEY=<value present in Vercel WORLDMONITOR_VALID_KEYS>
 // ─────────────────────────────────────────────────────────────
 const RELAY_API_KEY = process.env.WORLDMONITOR_RELAY_KEY || '';
+// Surface the auth-mode at boot so misconfig (env var on wrong service,
+// typo'd name, missing on a fresh Railway deploy) is visible in the first
+// log lines instead of waiting for the first 401. PR #3565 review P2.
+if (!RELAY_API_KEY) {
+  console.warn('[Relay] WORLDMONITOR_RELAY_KEY not set — warm-pings will rely on Origin-trust only (fragile against CDN/firewall changes)');
+} else {
+  console.log('[Relay] WORLDMONITOR_RELAY_KEY configured — warm-pings will send X-WorldMonitor-Key');
+}
 
 function warmPingHeaders(extra = {}) {
   const h = {
@@ -4166,7 +4174,7 @@ async function seedChokepointWarmPing() {
       signal: AbortSignal.timeout(60_000),
     });
     if (!resp.ok) {
-      console.warn(`[Chokepoints] Warm-ping failed: HTTP ${resp.status}${RELAY_API_KEY ? '' : ' (no WORLDMONITOR_RELAY_KEY set)'}`);
+      console.warn(`[Chokepoints] Warm-ping failed: HTTP ${resp.status}${RELAY_API_KEY ? '' : ' (no WORLDMONITOR_RELAY_KEY set; relying on Origin-trust)'}`);
       return;
     }
     const data = await resp.json();
@@ -4204,7 +4212,7 @@ async function seedCableHealthWarmPing() {
       signal: AbortSignal.timeout(60_000),
     });
     if (!resp.ok) {
-      console.warn(`[CableHealth] Warm-ping failed: HTTP ${resp.status}${RELAY_API_KEY ? '' : ' (no WORLDMONITOR_RELAY_KEY set)'}`);
+      console.warn(`[CableHealth] Warm-ping failed: HTTP ${resp.status}${RELAY_API_KEY ? '' : ' (no WORLDMONITOR_RELAY_KEY set; relying on Origin-trust)'}`);
       return;
     }
     const data = await resp.json();
