@@ -196,13 +196,26 @@ function categorizeStory(title) {
 
 async function warmDigestCache() {
   const apiBase = process.env.API_BASE_URL || 'https://api.worldmonitor.app';
+  // Defense-in-depth auth — see seed-infra.mjs for the same pattern + rationale.
+  // Set WORLDMONITOR_RELAY_KEY on the Railway service (must match a value in
+  // Vercel's WORLDMONITOR_VALID_KEYS). Origin alone is no longer reliable
+  // because CF/Vercel intermediaries may strip it and CF can cache the 401.
+  const relayApiKey = process.env.WORLDMONITOR_RELAY_KEY || '';
+  const headers = {
+    'User-Agent': CHROME_UA,
+    Origin: 'https://worldmonitor.app',
+  };
+  if (relayApiKey) headers['X-WorldMonitor-Key'] = relayApiKey;
   try {
     const resp = await fetch(`${apiBase}/api/news/v1/list-feed-digest?variant=full&lang=en`, {
-      headers: { 'User-Agent': CHROME_UA },
+      headers,
       signal: AbortSignal.timeout(30_000),
     });
     if (resp.ok) console.log('  Digest cache warmed via RPC');
-    else console.warn(`  Digest warm failed: HTTP ${resp.status}`);
+    else {
+      const keyNote = relayApiKey ? '' : ' (WORLDMONITOR_RELAY_KEY not set — Origin-only auth)';
+      console.warn(`  Digest warm failed: HTTP ${resp.status}${keyNote}`);
+    }
   } catch (err) {
     console.warn(`  Digest warm failed: ${err.message}`);
   }
