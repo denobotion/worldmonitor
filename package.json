@@ -55,5 +55,9 @@
     "data",
     "aggregator"
   ],
-  "author": "personal fork - learning project"
+  "author": "personal fork - learning project",
+  "notes": "Personal fork for learning TypeScript and Express patterns. Running locally on port 4000 to avoid conflicts with other dev servers.",
+  "config": {
+    "port": 4000
+  }
 }
