@@ -56,8 +56,9 @@
     "aggregator"
   ],
   "author": "personal fork - learning project",
-  "notes": "Personal fork for learning TypeScript and Express patterns. Running locally on port 4000 to avoid conflicts with other dev servers.",
+  "notes": "Personal fork for learning TypeScript and Express patterns. Running locally on port 4000 to avoid conflicts with other dev servers. Added prettier printWidth tweak and set poll interval to 60s for lighter local resource usage.",
   "config": {
-    "port": 4000
+    "port": 4000,
+    "pollIntervalSeconds": 60
   }
 }
