@@ -56,12 +56,13 @@
     "aggregator"
   ],
   "author": "personal fork - learning project",
-  "notes": "Personal fork for learning TypeScript and Express patterns. Running locally on port 4000 to avoid conflicts with other dev servers. Added prettier printWidth tweak and set poll interval to 180s to further reduce noise in logs while I'm stepping through code locally (was 120s). Bumped retryAttempts to 5 so transient network errors don't kill the fetch cycle while I'm offline/on flaky wifi. Increased retryDelayMs to 3000 to give flaky connections a bit more breathing room between attempts. Bumped maxConcurrentRequests from default to 3 to avoid hammering APIs when I have multiple sources enabled during local testing.",
+  "notes": "Personal fork for learning TypeScript and Express patterns. Running locally on port 4000 to avoid conflicts with other dev servers. Added prettier printWidth tweak and set poll interval to 180s to further reduce noise in logs while I'm stepping through code locally (was 120s). Bumped retryAttempts to 5 so transient network errors don't kill the fetch cycle while I'm offline/on flaky wifi. Increased retryDelayMs to 3000 to give flaky connections a bit more breathing room between attempts. Bumped maxConcurrentRequests from default to 3 to avoid hammering APIs when I have multiple sources enabled during local testing. Bumped requestTimeoutMs to 10000 to stop seeing timeout errors when my VPN is being slow.",
   "config": {
     "port": 4000,
     "pollIntervalSeconds": 180,
     "retryAttempts": 5,
     "retryDelayMs": 3000,
-    "maxConcurrentRequests": 3
+    "maxConcurrentRequests": 3,
+    "requestTimeoutMs": 10000
   }
 }
